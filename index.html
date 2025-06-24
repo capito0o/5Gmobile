@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5G Mobile Services - نظام إدارة المحل</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+            min-height: 100vh;
+        }
+        
+        .login-container {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background: var(--secondary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-icon {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: white;
+            font-size: 32px;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .card-content {
+            padding: 25px;
+            flex-grow: 1;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .card-desc {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .btn-card {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .btn-card:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .back-to-dashboard {
+            background: var(--light);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .cashier-summary {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .signature-area {
+            border-top: 2px dashed #ddd;
+            padding-top: 25px;
+            margin-top: 30px;
+        }
+        
+        .role-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .badge-manager {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .badge-tech {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 350px;
+            display: none;
+        }
+        
+        .employee-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .employee-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .stat-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .stat-title {
+            color: #6c757d;
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn-action {
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .employee-overview {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .overview-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .overview-value {
+            font-weight: 700;
+            font-size: 18px;
+            margin-top: 5px;
+            color: var(--primary);
+        }
+        
+        .overview-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .employee-cashier-details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .cashier-detail-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .cashier-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cashier-detail-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .cashier-detail-item {
+            text-align: center;
+            padding: 10px;
+            background: #f1f8ff;
+            border-radius: 8px;
+        }
+        
+        .cashier-detail-value {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--dark);
+        }
+        
+        .cashier-detail-label {
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .net-over {
+            background: #e8f5e9;
+            border-left: 4px solid var(--success);
+        }
+        
+        .modal-title {
+            font-weight: 700;
+        }
+        
+        .modal-header {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* أزرار الحفظ على Google Drive */
+        .btn-drive {
+            background: #34A853;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-drive:hover {
+            background: #2d8e46;
+        }
+        
+        /* نافذة إعدادات Google Drive */
+        .drive-settings {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .drive-connected {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--success);
+        }
+        
+        .drive-disconnected {
+            background-color: #ffebee;
+            border-left: 4px solid var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <!-- شاشة الدخول -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-card">
+            <div class="login-header">
+                <h2><i class="fas fa-mobile-alt me-2"></i>5G Mobile Services</h2>
+                <p class="mb-0">نظام إدارة المحل - تسجيل الدخول</p>
+            </div>
+            <div class="login-body p-4">
+                <div class="mb-4">
+                    <label for="username" class="form-label">اسم المستخدم</label>
+                    <input type="text" class="form-control" id="username" placeholder="أدخل اسم المستخدم">
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">كلمة المرور</label>
+                    <input type="password" class="form-control" id="password" placeholder="أدخل كلمة المرور">
+                </div>
+                <button class="btn btn-primary btn-lg w-100" id="loginBtn">
+                    <i class="fas fa-sign-in-alt me-2"></i>دخول إلى النظام
+                </button>
+                
+                <div class="mt-4 text-center">
+                    <p class="text-muted">بيانات الدخول الافتراضية:</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <div class="badge bg-primary">مدير: admin@5G</div>
+                        <div class="badge bg-info">فني: tech@2024</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم الرئيسية -->
+    <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h4 id="currentUserName">أحمد محمد</h4>
+                    <div class="role-badge" id="currentUserRole">مدير</div>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-outline-danger" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
+                </button>
+            </div>
+        </div>
+        
+        <h3 class="mb-4 text-center"><i class="fas fa-tachometer-alt me-2"></i>لوحة التحكم الرئيسية</h3>
+        
+        <div class="dashboard-grid" id="dashboardGrid">
+            <!-- لوحة التحكم (للمدير فقط) -->
+            <div class="dashboard-card" id="dashboardCard">
+                <div class="card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">لوحة التحكم</h3>
+                    <p class="card-desc">عرض الإحصائيات والأداء العام للمحل، ومتابعة أداء الموظفين والأقسام المختلفة</p>
+                    <button class="btn btn-card" data-section="dashboardSection">
+                        <i class="fas fa-external-link-alt me-2"></i>فتح اللوحة
+                    </button>
+                </div>
+            </div>
+            
+            <!-- إدارة الموظفين (للمدير فقط) -->
+            <div class="dashboard-card" id="employeeManagementCard">
+                <div class="card-icon" style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">إدارة الموظفين</h3>
+                    <p class="card-desc">إضافة موظفين جدد، تعديل بيانات الموظفين، إدارة الصلاحيات والحسابات</p>
+                    <button class="btn btn-card" data-section="employeesSection">
+                        <i class="fas fa-external-link-alt me-2"></i>فتح القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- قسم الصيانة -->
+            <div class="dashboard-card">
+                <div class="card-icon" style="background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">قسم الصيانة</h3>
+                    <p class="card-desc">إدارة طلبات الصيانة، متابعة حالة الأجهزة، حساب تكاليف الصيانة والأرباح</p>
+                    <button class="btn btn-card" data-section="maintenanceSection">
+                        <i class="fas fa-external-link-alt me-2"></i>فتح القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- التقفيل اليومي -->
+            <div class="dashboard-card">
+                <div class="card-icon" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">
+                    <i class="fas fa-cash-register"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">التقفيل اليومي</h3>
+                    <p class="card-desc">تسجيل استلام وتقفيل اليوم، حساب الفروقات، توقيع الموظفين على التقارير اليومية</p>
+                    <button class="btn btn-card" data-section="cashierSection">
+                        <i class="fas fa-external-link-alt me-2"></i>فتح القسم
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- لوحة التحكم (للمدير فقط) -->
+        <div class="section" id="dashboardSection">
+            <div class="section-header">
+                <h3 class="section-title"><i class="fas fa-chart-line me-2"></i>لوحة تحكم المدير</h3>
+                <div>
+                    <button class="btn btn-drive me-2" id="saveDashboardToDrive">
+                        <i class="fab fa-google-drive me-2"></i>حفظ على Google Drive
+                    </button>
+                    <button class="back-to-dashboard">
+                        <i class="fas fa-arrow-left me-2"></i>العودة للرئيسية
+                    </button>
+                </div>
+            </div>
+            
+            <!-- إعدادات Google Drive (للمدير فقط) -->
+            <div class="drive-settings" id="driveSettings">
+                <h5><i class="fab fa-google-drive me-2"></i>إعدادات Google Drive</h5>
+                <div class="drive-connected p-3 mb-3" id="driveStatus">
+                    <i class="fas fa-check-circle me-2"></i>متصل بـ Google Drive
+                    <span id="driveAccount">ahmed@5g.com</span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">البريد الإلكتروني لـ Google Drive</label>
+                    <input type="email" class="form-control" id="driveEmail" placeholder="أدخل البريد الإلكتروني">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">كلمة المرور</label>
+                    <input type="password" class="form-control" id="drivePassword" placeholder="أدخل كلمة المرور">
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-secondary me-2" id="disconnectDriveBtn">
+                        <i class="fas fa-unlink me-2"></i>فصل الحساب
+                    </button>
+                    <button class="btn btn-primary" id="connectDriveBtn">
+                        <i class="fas fa-link me-2"></i>ربط الحساب
+                    </button>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">7</div>
+                    <div class="stat-title">عدد الموظفين</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="stat-number">23</div>
+                    <div class="stat-title">طلبات الصيانة</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-cash-register"></i>
+                    </div>
+                    <div class="stat-number">18,450 ج.م</div>
+                    <div class="stat-title">إجمالي التقفيلات</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-number">9,870 ج.م</div>
+                    <div class="stat-title">صافي الأرباح</div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>أحدث طلبات الصيانة</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>الجهاز</th>
+                                    <th>العميل</th>
+                                    <th>التكلفة</th>
+                                    <th>قطع الغيار</th>
+                                    <th>صافي الربح</th>
+                                    <th>الحالة</th>
+                                    <th>الفني</th>
+                                    <th>وقت الاستلام</th>
+                                    <th>وقت التسليم</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>iPhone 12</td>
+                                    <td>خالد سعيد</td>
+                                    <td>350 ج.م</td>
+                                    <td>120 ج.م</td>
+                                    <td>230 ج.م</td>
+                                    <td><span class="badge bg-success">تم التسليم</span></td>
+                                    <td>محمد أحمد</td>
+                                    <td>24/06 09:30</td>
+                                    <td>24/06 12:45</td>
+                                </tr>
+                                <tr>
+                                    <td>Samsung S21</td>
+                                    <td>سارة محمد</td>
+                                    <td>200 ج.م</td>
+                                    <td>80 ج.م</td>
+                                    <td>120 ج.م</td>
+                                    <td><span class="badge bg-warning">قيد التنفيذ</span></td>
+                                    <td>ياسر خالد</td>
+                                    <td>24/06 10:15</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Huawei P30</td>
+                                    <td>عمر عبد الله</td>
+                                    <td>150 ج.م</td>
+                                    <td>50 ج.م</td>
+                                    <td>100 ج.م</td>
+                                    <td><span class="badge bg-info">في الانتظار</span></td>
+                                    <td>-</td>
+                                    <td>24/06 11:00</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- التقفيل اليومي للموظفين -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>التقفيل اليومي للموظفين</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>الموظف</th>
+                                    <th>التاريخ</th>
+                                    <th>إجمالي الاستلام</th>
+                                    <th>إجمالي التسليم</th>
+                                    <th>صافي الأوفر</th>
+                                    <th>وقت بداية الدوام</th>
+                                    <th>وقت نهاية الدوام</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>محمد أحمد</td>
+                                    <td>24/06/2025</td>
+                                    <td>1,500 ج.م</td>
+                                    <td>1,250 ج.م</td>
+                                    <td>250 ج.م</td>
+                                    <td>09:00 ص</td>
+                                    <td>05:00 م</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> التفاصيل
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ياسر خالد</td>
+                                    <td>24/06/2025</td>
+                                    <td>2,300 ج.م</td>
+                                    <td>1,900 ج.م</td>
+                                    <td>400 ج.م</td>
+                                    <td>09:15 ص</td>
+                                    <td>05:30 م</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> التفاصيل
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>علي محمود</td>
+                                    <td>24/06/2025</td>
+                                    <td>1,850 ج.م</td>
+                                    <td>1,540 ج.م</td>
+                                    <td>310 ج.م</td>
+                                    <td>08:45 ص</td>
+                                    <td>05:15 م</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> التفاصيل
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- نظرة عامة على أداء الموظفين -->
+            <div class="employee-overview">
+                <h5 class="mb-3"><i class="fas fa-chart-bar me-2"></i>نظرة عامة على أداء الموظفين</h5>
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="overview-label">أعلى تقفيل</div>
+                        <div class="overview-value">2,300 ج.م</div>
+                        <div class="overview-label">ياسر خالد</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-label">أعلى صافي أوفر</div>
+                        <div class="overview-value">400 ج.م</div>
+                        <div class="overview-label">ياسر خالد</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-label">متوسط التقفيل</div>
+                        <div class="overview-value">1,883 ج.م</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-label">متوسط صافي الأوفر</div>
+                        <div class="overview-value">320 ج.م</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- إدارة الموظفين -->
+        <div class="section" id="employeesSection">
+            <div class="section-header">
+                <h3 class="section-title"><i class="fas fa-users me-2"></i>إدارة الموظفين</h3>
+                <div>
+                    <button class="btn btn-drive me-2" id="saveEmployeesToDrive">
+                        <i class="fab fa-google-drive me-2"></i>حفظ على Google Drive
+                    </button>
+                    <button class="btn btn-primary me-2" id="addEmployeeBtn">
+                        <i class="fas fa-plus me-2"></i>إضافة موظف
+                    </button>
+                    <button class="back-to-dashboard">
+                        <i class="fas fa-arrow-left me-2"></i>العودة
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="employee-card">
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-3" style="background: var(--secondary);">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <h5>أحمد محمد</h5>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-primary me-2">مدير</span>
+                                    <span><i class="fas fa-phone me-1"></i>0551234567</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons mt-3">
+                            <button class="btn btn-outline-primary btn-action">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                            <button class="btn btn-outline-info btn-action">
+                                <i class="fas fa-cash-register"></i> التقفيل
+                            </button>
+                        </div>
+                        
+                        <!-- تفاصيل استلام وتقفيل الموظف -->
+                        <div class="employee-cashier-details">
+                            <h6><i class="fas fa-file-invoice me-2"></i>تفاصيل التقفيل اليومي</h6>
+                            <div class="cashier-detail-card">
+                                <div class="cashier-detail-header">
+                                    <div class="fw-bold">استلام اليوم</div>
+                                    <div class="text-muted">24/06/2025</div>
+                                </div>
+                                <div class="cashier-detail-body">
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">1,500 ج.م</div>
+                                        <div class="cashier-detail-label">إجمالي الاستلام</div>
+                                    </div>
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">09:00 ص</div>
+                                        <div class="cashier-detail-label">وقت بداية الدوام</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="cashier-detail-card">
+                                <div class="cashier-detail-header">
+                                    <div class="fw-bold">تسليم اليوم</div>
+                                    <div class="text-muted">24/06/2025</div>
+                                </div>
+                                <div class="cashier-detail-body">
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">1,250 ج.م</div>
+                                        <div class="cashier-detail-label">إجمالي التسليم</div>
+                                    </div>
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">05:00 م</div>
+                                        <div class="cashier-detail-label">وقت نهاية الدوام</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="cashier-detail-card net-over">
+                                <div class="cashier-detail-header">
+                                    <div class="fw-bold">صافي الأوفر</div>
+                                </div>
+                                <div class="cashier-detail-body">
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">250 ج.م</div>
+                                        <div class="cashier-detail-label">الفرق بين الاستلام والتسليم</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="employee-card">
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-3" style="background: var(--success);">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <h5>محمد أحمد</h5>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-info me-2">فني صيانة</span>
+                                    <span><i class="fas fa-phone me-1"></i>0557654321</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons mt-3">
+                            <button class="btn btn-outline-primary btn-action">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                            <button class="btn btn-outline-info btn-action">
+                                <i class="fas fa-cash-register"></i> التقفيل
+                            </button>
+                        </div>
+                        
+                        <!-- تفاصيل استلام وتقفيل الموظف -->
+                        <div class="employee-cashier-details">
+                            <h6><i class="fas fa-file-invoice me-2"></i>تفاصيل التقفيل اليومي</h6>
+                            <div class="cashier-detail-card">
+                                <div class="cashier-detail-header">
+                                    <div class="fw-bold">استلام اليوم</div>
+                                    <div class="text-muted">24/06/2025</div>
+                                </div>
+                                <div class="cashier-detail-body">
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">2,300 ج.م</div>
+                                        <div class="cashier-detail-label">إجمالي الاستلام</div>
+                                    </div>
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">09:15 ص</div>
+                                        <div class="cashier-detail-label">وقت بداية الدوام</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="cashier-detail-card">
+                                <div class="cashier-detail-header">
+                                    <div class="fw-bold">تسليم اليوم</div>
+                                    <div class="text-muted">24/06/2025</div>
+                                </div>
+                                <div class="cashier-detail-body">
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">1,900 ج.م</div>
+                                        <div class="cashier-detail-label">إجمالي التسليم</div>
+                                    </div>
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">05:30 م</div>
+                                        <div class="cashier-detail-label">وقت نهاية الدوام</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="cashier-detail-card net-over">
+                                <div class="cashier-detail-header">
+                                    <div class="fw-bold">صافي الأوفر</div>
+                                </div>
+                                <div class="cashier-detail-body">
+                                    <div class="cashier-detail-item">
+                                        <div class="cashier-detail-value">400 ج.م</div>
+                                        <div class="cashير-detail-label">الفرق بين الاستلام والتسليم</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- قسم الصيانة -->
+        <div class="section" id="maintenanceSection">
+            <div class="section-header">
+                <h3 class="section-title"><i class="fas fa-tools me-2"></i>قسم الصيانة</h3>
+                <div>
+                    <button class="btn btn-drive me-2" id="saveMaintenanceToDrive">
+                        <i class="fab fa-google-drive me-2"></i>حفظ على Google Drive
+                    </button>
+                    <button class="btn btn-primary me-2" id="addMaintenanceBtn">
+                        <i class="fas fa-plus me-2"></i>إضافة طلب
+                    </button>
+                    <button class="back-to-dashboard">
+                        <i class="fas fa-arrow-left me-2"></i>العودة
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>العميل</th>
+                            <th>نوع الجهاز</th>
+                            <th>المشكلة</th>
+                            <th>تكلفة الخدمة</th>
+                            <th>قطع الغيار</th>
+                            <th>صافي الربح</th>
+                            <th>الحالة</th>
+                            <th>وقت الاستلام</th>
+                            <th>وقت التسليم</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#M-205</td>
+                            <td>خالد سعيد</td>
+                            <td>iPhone 12</td>
+                            <td>شاشة مكسورة</td>
+                            <td>350 ج.م</td>
+                            <td>120 ج.م</td>
+                            <td>230 ج.م</td>
+                            <td><span class="badge bg-success">تم التسليم</span></td>
+                            <td>24/06 09:30</td>
+                            <td>24/06 12:45</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#M-204</td>
+                            <td>سارة محمد</td>
+                            <td>Samsung S21</td>
+                            <td>شحن البطارية</td>
+                            <td>200 ج.م</td>
+                            <td>80 ج.م</td>
+                            <td>120 ج.م</td>
+                            <td><span class="badge bg-warning">قيد التنفيذ</span></td>
+                            <td>24/06 10:15</td>
+                            <td>-</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#M-203</td>
+                            <td>عمر عبد الله</td>
+                            <td>Huawei P30</td>
+                            <td>تحديث النظام</td>
+                            <td>150 ج.م</td>
+                            <td>50 ج.م</td>
+                            <td>100 ج.م</td>
+                            <td><span class="badge bg-info">في الانتظار</span></td>
+                            <td>24/06 11:00</td>
+                            <td>-</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- التقفيل اليومي -->
+        <div class="section" id="cashierSection">
+            <div class="section-header">
+                <h3 class="section-title"><i class="fas fa-cash-register me-2"></i>التقفيل اليومي</h3>
+                <div>
+                    <button class="btn btn-drive me-2" id="saveCashierToDrive">
+                        <i class="fab fa-google-drive me-2"></i>حفظ على Google Drive
+                    </button>
+                    <button class="back-to-dashboard">
+                        <i class="fas fa-arrow-left me-2"></i>العودة
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-download me-2"></i>استلام اليوم</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">وقت بداية الدوام</label>
+                                <input type="time" class="form-control" value="09:00">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">نقدي</label>
+                                <input type="number" class="form-control" value="1250">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">فوري</label>
+                                <input type="number" class="form-control" value="850">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">كاش</label>
+                                <input type="number" class="form-control" value="650">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">خوارج</label>
+                                <input type="number" class="form-control" value="320">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-upload me-2"></i>تسليم اليوم</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">وقت نهاية الدوام</label>
+                                <input type="time" class="form-control" value="17:00">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">نقدي</label>
+                                <input type="number" class="form-control" value="1100">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">فوري</label>
+                                <input type="number" class="form-control" value="750">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">كاش</label>
+                                <input type="number" class="form-control" value="580">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">خوارج</label>
+                                <input type="number" class="form-control" value="280">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cashier-summary">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center p-3 bg-white rounded shadow-sm">
+                            <div class="text-muted">إجمالي الاستلام</div>
+                            <div class="fs-3 fw-bold text-primary">3,070 ج.م</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center p-3 bg-white rounded shadow-sm">
+                            <div class="text-muted">إجمالي التسليم</div>
+                            <div class="fs-3 fw-bold text-success">2,710 ج.م</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center p-3 bg-white rounded shadow-sm">
+                            <div class="text-muted">الفرق</div>
+                            <div class="fs-3 fw-bold text-danger">360 ج.م</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center p-3 bg-white rounded shadow-sm">
+                            <div class="text-muted">الرصيد النهائي</div>
+                            <div class="fs-3 fw-bold text-dark">12,870 ج.م</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-center mt-4">
+                <button class="btn btn-primary btn-lg px-5">
+                    <i class="fas fa-save me-2"></i>حفظ البيانات
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الإشعارات -->
+    <div class="notification">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto"><i class="fas fa-check-circle me-2"></i>تم بنجاح</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="notificationMessage">
+                تم تسجيل الدخول بنجاح!
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج إضافة موظف -->
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addEmployeeModalLabel"><i class="fas fa-user-plus me-2"></i>إضافة موظف جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="employeeForm">
+                        <div class="mb-3">
+                            <label for="employeeName" class="form-label">اسم الموظف</label>
+                            <input type="text" class="form-control" id="employeeName" placeholder="أدخل اسم الموظف" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employeePhone" class="form-label">رقم الهاتف</label>
+                            <input type="tel" class="form-control" id="employeePhone" placeholder="أدخل رقم الهاتف" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employeeRole" class="form-label">الدور الوظيفي</label>
+                            <select class="form-select" id="employeeRole" required>
+                                <option value="" selected disabled>اختر الدور</option>
+                                <option value="manager">مدير</option>
+                                <option value="technician">فني صيانة</option>
+                                <option value="cashier">كاشير</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employeeUsername" class="form-label">اسم المستخدم</label>
+                            <input type="text" class="form-control" id="employeeUsername" placeholder="أدخل اسم المستخدم" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employeePassword" class="form-label">كلمة المرور</label>
+                            <input type="password" class="form-control" id="employeePassword" placeholder="أدخل كلمة المرور" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveEmployeeBtn">حفظ الموظف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج إضافة طلب صيانة -->
+    <div class="modal fade" id="addMaintenanceModal" tabindex="-1" aria-labelledby="addMaintenanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMaintenanceModalLabel"><i class="fas fa-tools me-2"></i>إضافة طلب صيانة جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="maintenanceForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="customerName" class="form-label">اسم العميل</label>
+                                    <input type="text" class="form-control" id="customerName" placeholder="أدخل اسم العميل" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="customerPhone" class="form-label">رقم هاتف العميل</label>
+                                    <input type="tel" class="form-control" id="customerPhone" placeholder="أدخل رقم الهاتف" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="deviceType" class="form-label">نوع الجهاز</label>
+                                    <select class="form-select" id="deviceType" required>
+                                        <option value="" selected disabled>اختر نوع الجهاز</option>
+                                        <option value="iPhone">iPhone</option>
+                                        <option value="Samsung">Samsung</option>
+                                        <option value="Huawei">Huawei</option>
+                                        <option value="Xiaomi">Xiaomi</option>
+                                        <option value="Other">أخرى</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="deviceModel" class="form-label">موديل الجهاز</label>
+                                    <input type="text" class="form-control" id="deviceModel" placeholder="أدخل موديل الجهاز" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="problemDescription" class="form-label">وصف المشكلة</label>
+                                    <textarea class="form-control" id="problemDescription" rows="3" placeholder="أدخل وصف المشكلة" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="serviceCost" class="form-label">تكلفة الخدمة (ج.م)</label>
+                                    <input type="number" class="form-control" id="serviceCost" placeholder="أدخل تكلفة الخدمة" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="partsCost" class="form-label">تكلفة قطع الغيار (ج.م)</label>
+                                    <input type="number" class="form-control" id="partsCost" placeholder="أدخل تكلفة قطع الغيار" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="assignedTechnician" class="form-label">الفني المسؤول</label>
+                                    <select class="form-select" id="assignedTechnician" required>
+                                        <option value="" selected disabled>اختر الفني المسؤول</option>
+                                        <option value="1">محمد أحمد</option>
+                                        <option value="2">ياسر خالد</option>
+                                        <option value="3">علي محمود</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveMaintenanceBtn">حفظ الطلب</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // بيانات المستخدمين
+        const users = {
+            'admin@5G': { name: 'أحمد محمد', role: 'مدير', password: 'admin@5G' },
+            'tech@2024': { name: 'محمد أحمد', role: 'فني', password: 'tech@2024' }
+        };
+
+        // عناصر واجهة المستخدم
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const currentUserName = document.getElementById('currentUserName');
+        const currentUserRole = document.getElementById('currentUserRole');
+        const notification = document.querySelector('.notification');
+        const notificationMessage = document.getElementById('notificationMessage');
+        const toast = new bootstrap.Toast(notification.querySelector('.toast'));
+        const dashboardGrid = document.getElementById('dashboardGrid');
+        const sections = document.querySelectorAll('.section');
+        const cardButtons = document.querySelectorAll('.btn-card');
+        const backButtons = document.querySelectorAll('.back-to-dashboard');
+        const dashboardCard = document.getElementById('dashboardCard');
+        const employeeManagementCard = document.getElementById('employeeManagementCard');
+        const employeesSection = document.getElementById('employeesSection');
+        const driveSettings = document.getElementById('driveSettings');
+        const driveStatus = document.getElementById('driveStatus');
+        const driveAccount = document.getElementById('driveAccount');
+        
+        // متغيرات لحساب Google Drive
+        let googleDriveConnected = false;
+        let googleDriveAccount = '';
+        
+        // نماذج وأزرار جديدة
+        const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+        const addMaintenanceBtn = document.getElementById('addMaintenanceBtn');
+        const saveEmployeeBtn = document.getElementById('saveEmployeeBtn');
+        const saveMaintenanceBtn = document.getElementById('saveMaintenanceBtn');
+        const addEmployeeModal = new bootstrap.Modal(document.getElementById('addEmployeeModal'));
+        const addMaintenanceModal = new bootstrap.Modal(document.getElementById('addMaintenanceModal'));
+        const connectDriveBtn = document.getElementById('connectDriveBtn');
+        const disconnectDriveBtn = document.getElementById('disconnectDriveBtn');
+        const driveEmail = document.getElementById('driveEmail');
+        const drivePassword = document.getElementById('drivePassword');
+        
+        // أزرار الحفظ على Google Drive
+        const saveDashboardToDrive = document.getElementById('saveDashboardToDrive');
+        const saveEmployeesToDrive = document.getElementById('saveEmployeesToDrive');
+        const saveMaintenanceToDrive = document.getElementById('saveMaintenanceToDrive');
+        const saveCashierToDrive = document.getElementById('saveCashierToDrive');
+
+        // تسجيل الدخول
+        loginBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (users[username] && users[username].password === password) {
+                // تسجيل الدخول ناجح
+                const user = users[username];
+                currentUserName.textContent = user.name;
+                currentUserRole.textContent = user.role;
+                
+                // إضافة بادج حسب الدور
+                currentUserRole.className = 'role-badge ';
+                if (user.role === 'مدير') {
+                    currentUserRole.classList.add('badge-manager');
+                    dashboardCard.style.display = 'block';
+                    employeeManagementCard.style.display = 'block';
+                    driveSettings.style.display = 'block';
+                } else {
+                    currentUserRole.classList.add('badge-tech');
+                    dashboardCard.style.display = 'none';
+                    employeeManagementCard.style.display = 'none';
+                    driveSettings.style.display = 'none';
+                }
+                
+                // إظهار لوحة التحكم وإخفاء شاشة الدخول
+                loginScreen.style.display = 'none';
+                dashboard.style.display = 'block';
+                
+                // إظهار إشعار
+                notificationMessage.textContent = `مرحباً ${user.name}! تم تسجيل الدخول بنجاح.`;
+                notification.style.display = 'block';
+                toast.show();
+            } else {
+                // بيانات الدخول غير صحيحة
+                notificationMessage.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة!';
+                notification.style.display = 'block';
+                toast.show();
+            }
+        });
+
+        // تسجيل الخروج
+        logoutBtn.addEventListener('click', function() {
+            loginScreen.style.display = 'flex';
+            dashboard.style.display = 'none';
+            usernameInput.value = '';
+            passwordInput.value = '';
+            
+            // إخفاء جميع الأقسام عند الخروج
+            sections.forEach(section => section.style.display = 'none');
+            dashboardGrid.style.display = 'grid';
+        });
+
+        // التنقل بين الأقسام
+        cardButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const sectionId = this.getAttribute('data-section');
+                
+                // إذا كان القسم هو إدارة الموظفين والمستخدم ليس مديراً
+                if (sectionId === 'employeesSection' && currentUserRole.textContent !== 'مدير') {
+                    notificationMessage.textContent = 'ليس لديك صلاحية الوصول إلى هذا القسم.';
+                    notification.style.display = 'block';
+                    toast.show();
+                    return;
+                }
+                
+                // إخفاء لوحة الأزرار
+                dashboardGrid.style.display = 'none';
+                
+                // إخفاء جميع الأقسام
+                sections.forEach(section => section.style.display = 'none');
+                
+                // إظهار القسم المطلوب
+                document.getElementById(sectionId).style.display = 'block';
+            });
+        });
+
+        // العودة إلى لوحة التحكم الرئيسية
+        backButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // إخفاء جميع الأقسام
+                sections.forEach(section => section.style.display = 'none');
+                
+                // إظهار لوحة الأزرار
+                dashboardGrid.style.display = 'grid';
+            });
+        });
+
+        // فتح نموذج إضافة موظف
+        addEmployeeBtn.addEventListener('click', function() {
+            addEmployeeModal.show();
+        });
+
+        // فتح نموذج إضافة طلب صيانة
+        addMaintenanceBtn.addEventListener('click', function() {
+            addMaintenanceModal.show();
+        });
+
+        // حفظ بيانات الموظف
+        saveEmployeeBtn.addEventListener('click', function() {
+            const name = document.getElementById('employeeName').value;
+            const phone = document.getElementById('employeePhone').value;
+            const role = document.getElementById('employeeRole').value;
+            
+            if (name && phone && role) {
+                notificationMessage.textContent = `تم إضافة الموظف ${name} بنجاح!`;
+                notification.style.display = 'block';
+                toast.show();
+                addEmployeeModal.hide();
+            } else {
+                notificationMessage.textContent = 'الرجاء ملء جميع الحقول المطلوبة!';
+                notification.style.display = 'block';
+                toast.show();
+            }
+        });
+
+        // حفظ بيانات طلب الصيانة
+        saveMaintenanceBtn.addEventListener('click', function() {
+            const customerName = document.getElementById('customerName').value;
+            const deviceType = document.getElementById('deviceType').value;
+            
+            if (customerName && deviceType) {
+                notificationMessage.textContent = `تم إضافة طلب صيانة لـ ${customerName} بنجاح!`;
+                notification.style.display = 'block';
+                toast.show();
+                addMaintenanceModal.hide();
+            } else {
+                notificationMessage.textContent = 'الرجاء ملء جميع الحقول المطلوبة!';
+                notification.style.display = 'block';
+                toast.show();
+            }
+        });
+        
+        // ربط حساب Google Drive
+        connectDriveBtn.addEventListener('click', function() {
+            const email = driveEmail.value.trim();
+            const password = drivePassword.value.trim();
+            
+            if (email && password) {
+                googleDriveConnected = true;
+                googleDriveAccount = email;
+                
+                driveStatus.className = 'drive-connected p-3 mb-3';
+                driveStatus.innerHTML = `<i class="fas fa-check-circle me-2"></i>متصل بـ Google Drive <span id="driveAccount">${email}</span>`;
+                driveAccount.textContent = email;
+                
+                notificationMessage.textContent = 'تم ربط حساب Google Drive بنجاح!';
+                notification.style.display = 'block';
+                toast.show();
+            } else {
+                notificationMessage.textContent = 'الرجاء إدخال البريد الإلكتروني وكلمة المرور!';
+                notification.style.display = 'block';
+                toast.show();
+            }
+        });
+        
+        // فصل حساب Google Drive
+        disconnectDriveBtn.addEventListener('click', function() {
+            googleDriveConnected = false;
+            googleDriveAccount = '';
+            
+            driveStatus.className = 'drive-disconnected p-3 mb-3';
+            driveStatus.innerHTML = '<i class="fas fa-times-circle me-2"></i>غير متصل بـ Google Drive';
+            
+            driveEmail.value = '';
+            drivePassword.value = '';
+            
+            notificationMessage.textContent = 'تم فصل حساب Google Drive بنجاح!';
+            notification.style.display = 'block';
+            toast.show();
+        });
+        
+        // حفظ البيانات على Google Drive
+        function saveDataToDrive(sectionName) {
+            if (!googleDriveConnected) {
+                notificationMessage.textContent = 'يرجى ربط حساب Google Drive أولاً من إعدادات لوحة التحكم!';
+                notification.style.display = 'block';
+                toast.show();
+                return;
+            }
+            
+            // هنا سيتم إضافة كود رفع الملفات إلى Google Drive
+            // في الواقع العملي، سيتطلب هذا استخدام Google Drive API
+            // لكن لأغراض العرض، سنعرض رسالة محاكاة فقط
+            
+            const fileName = `backup_${sectionName}_${new Date().toISOString().split('T')[0]}.json`;
+            
+            notificationMessage.textContent = `تم حفظ نسخة احتياطية من ${sectionName} على Google Drive باسم ${fileName}`;
+            notification.style.display = 'block';
+            toast.show();
+            
+            // في التطبيق الفعلي، سيكون الكود كالتالي:
+            /*
+            const fileContent = JSON.stringify(getSectionData(sectionName));
+            const file = new Blob([fileContent], {type: 'application/json'});
+            const metadata = {
+                'name': fileName,
+                'mimeType': 'application/json'
+            };
+            
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+            form.append('file', file);
+            
+            fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                method: 'POST',
+                headers: new Headers({
+                    'Authorization': 'Bearer ' + gapi.auth.getToken().access_token
+                }),
+                body: form
+            }).then((res) => {
+                return res.json();
+            }).then(function(val) {
+                console.log('تم الرفع بنجاح:', val);
+                notificationMessage.textContent = `تم حفظ نسخة احتياطية على Google Drive بنجاح!`;
+                notification.style.display = 'block';
+                toast.show();
+            });
+            */
+        }
+        
+        // دالة لجمع بيانات القسم
+        function getSectionData(sectionId) {
+            // في التطبيق الفعلي، سيتم جمع البيانات الحقيقية للقسم
+            // هذه مجرد بيانات تجريبية لأغراض العرض
+            return {
+                section: sectionId,
+                timestamp: new Date().toISOString(),
+                data: `بيانات القسم ${sectionId}`
+            };
+        }
+        
+        // ربط أزرار الحفظ على Google Drive
+        saveDashboardToDrive.addEventListener('click', () => saveDataToDrive('لوحة التحكم'));
+        saveEmployeesToDrive.addEventListener('click', () => saveDataToDrive('إدارة الموظفين'));
+        saveMaintenanceToDrive.addEventListener('click', () => saveDataToDrive('قسم الصيانة'));
+        saveCashierToDrive.addEventListener('click', () => saveDataToDrive('التقفيل اليومي'));
+
+        // تهيئة حالة Google Drive
+        if (googleDriveConnected) {
+            driveStatus.className = 'drive-connected p-3 mb-3';
+            driveStatus.innerHTML = `<i class="fas fa-check-circle me-2"></i>متصل بـ Google Drive <span id="driveAccount">${googleDriveAccount}</span>`;
+        } else {
+            driveStatus.className = 'drive-disconnected p-3 mb-3';
+            driveStatus.innerHTML = '<i class="fas fa-times-circle me-2"></i>غير متصل بـ Google Drive';
+        }
+    </script>
+</body>
+</html>
